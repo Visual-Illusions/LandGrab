@@ -1,5 +1,5 @@
 # LandGrab #
-### Economy Base ###
+### Area Claiming Plugin for CanaryMod ###
 #### Copyright &copy; 2014 Visual Illusions Entertainment ####
 #### Licensed under the BSD 3-Clause License (See License below) ####
 
