@@ -32,12 +32,12 @@ public final class Area {
         return vertex.getX() >= origin.getX() &&
                vertex.getX() <= offset.getX() &&
                vertex.getZ() >= origin.getZ() &&
-               vertex.getZ() >= offset.getZ();
+               vertex.getZ() <= offset.getZ();
     }
 
     private boolean isLargeEnough(){
         return origin != null && offset != null &&
-                getOccupiedSpace() >= 4;
+                getOccupiedSpace() >= 4; // that 4 is gonna be changed at somepoint
     }
 
     private void verifyVerticies(){
