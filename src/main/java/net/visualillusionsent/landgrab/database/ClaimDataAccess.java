@@ -26,6 +26,9 @@ public class ClaimDataAccess extends DataAccess {
     @Column(columnName = "permissions", dataType = Column.DataType.STRING, isList = true)
     public List<String> permissions;
 
+    @Column(columnName = "protections", dataType = Column.DataType.STRING, isList = true)
+    public List<String> protections;
+
     @Override
     public DataAccess getInstance() {
         return new ClaimDataAccess();

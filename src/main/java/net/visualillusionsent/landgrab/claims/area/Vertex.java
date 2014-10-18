@@ -1,5 +1,9 @@
 package net.visualillusionsent.landgrab.claims.area;
 
+import net.canarymod.ToolBox;
+import net.canarymod.api.entity.Entity;
+import net.canarymod.api.world.blocks.Block;
+
 /**
  * Created by darkdiplomat on 10/17/14.
  */
@@ -11,13 +15,14 @@ public class Vertex {
         this.z = z;
     }
 
-    public Vertex(String vertex){
-        if(!vertex.matches("\\d+\\|\\d+")){
-            throw new VertexDeserializationException("Invalid vertex serialized string (Given: '"+vertex+"' Expecting: 'integer|integer'");
-        }
-        String[] deserial = vertex.split("\\|");
-        this.x = Integer.valueOf(deserial[0]);
-        this.z = Integer.valueOf(deserial[1]);
+    public Vertex(Block block){
+        this.x = block.getX();
+        this.z = block.getZ();
+    }
+
+    public Vertex(Entity entity){
+        this.x = ToolBox.floorToBlock(entity.getX());
+        this.z = ToolBox.floorToBlock(entity.getZ());
     }
 
     public final int getX(){
@@ -45,6 +50,10 @@ public class Vertex {
     }
 
     public static Vertex deserializeVertex(String vertex){
-        return new Vertex(vertex);
+        if(!vertex.matches("\\d+\\|\\d+")){
+            throw new VertexDeserializationException("Invalid vertex serialized string (Given: '"+vertex+"' Expecting: 'integer|integer'");
+        }
+        String[] deserial = vertex.split("\\|");
+        return new Vertex(Integer.valueOf(deserial[0]), Integer.valueOf(deserial[1]));
     }
 }

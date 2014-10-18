@@ -21,9 +21,16 @@ public final class Claim {
     private UUID owner;
     private Area area;
     private ArrayListMultimap<UUID, Permission> permissions = ArrayListMultimap.create();
-    private ArrayList<Protections> protections = Lists.newArrayList();
+    private ArrayList<Protection> protections = Lists.newArrayList();
 
-    public Claim(){
+    public Claim(){}
+
+    public Claim(ClaimDataAccess data){
+        this.owner = UUID.fromString(data.owner);
+        this.area = new Area(Vertex.deserializeVertex(data.origin), Vertex.deserializeVertex(data.offset));
+        deserializePermissions(data.permissions);
+        deserializeProtections(data.protections);
+
     }
 
     public final void setOwner(PlayerReference reference){
@@ -57,6 +64,7 @@ public final class Claim {
         data.origin = Vertex.serializeVertex(area.getOrigin());
         data.offset = Vertex.serializeVertex(area.getOffset());
         data.permissions = serializePermissions();
+        data.protections = serializeProtections();
 
         try {
             HashMap<String, Object> filter = new HashMap<String, Object>();
@@ -70,13 +78,34 @@ public final class Claim {
     }
 
     private List<String> serializePermissions(){
-        ArrayList<String> serialPerms = new ArrayList<String>();
+        ArrayList<String> serialPerms = Lists.newArrayList();
         for(UUID owner : permissions.keySet()){
             for(Permission permission : permissions.get(owner)) {
                 serialPerms.add(String.format("%s|%s", owner.toString(), permission.name()));
             }
         }
         return serialPerms;
+    }
+
+    private void deserializePermissions(List<String> perms){
+        for(String serial : perms){
+            String[] deserial = serial.split("\\|");
+            permissions.put(UUID.fromString(deserial[0]), Permission.valueOf(deserial[1]));
+        }
+    }
+
+    private List<String> serializeProtections(){
+        ArrayList<String> serialProtections = Lists.newArrayList();
+        for(Protection protection : protections){
+            serialProtections.add(protection.name());
+        }
+        return serialProtections;
+    }
+
+    private void deserializeProtections(List<String> protect){
+        for(String serial : protect){
+            protections.add(Protection.valueOf(serial));
+        }
     }
 
 }

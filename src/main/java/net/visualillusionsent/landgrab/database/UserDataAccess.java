@@ -6,9 +6,9 @@ import net.canarymod.database.DataAccess;
 /**
  * Created by darkdiplomat on 10/17/14.
  */
-public class Users extends DataAccess {
+public class UserDataAccess extends DataAccess {
 
-    public Users(){
+    public UserDataAccess(){
         super("landgrab.users");
     }
 
@@ -23,6 +23,6 @@ public class Users extends DataAccess {
 
     @Override
     public DataAccess getInstance() {
-        return new Users();
+        return new UserDataAccess();
     }
 }
