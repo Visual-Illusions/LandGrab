@@ -31,5 +31,15 @@ public class LandGrabCommandListener extends VisualIllusionsCanaryPluginInformat
         // TODO Available/Used block area count thing
     }
 
+    @Command(
+            aliases = {"tool"},
+            permissions = {"landgrab.claim."},
+            description = "LandGrab tool toggle command",
+            toolTip = "/landgrab tool",
+            parent = "landgrab"
+    )
+    public final void tool(MessageReceiver receiver, String[] args){
+
+    }
 
 }

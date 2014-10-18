@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import net.canarymod.Canary;
 import net.canarymod.api.PlayerReference;
 import net.canarymod.database.exceptions.DatabaseWriteException;
+import net.visualillusionsent.landgrab.LandGrab;
 import net.visualillusionsent.landgrab.claims.area.Area;
 import net.visualillusionsent.landgrab.claims.area.Vertex;
 import net.visualillusionsent.landgrab.database.ClaimDataAccess;
@@ -30,11 +31,18 @@ public final class Claim {
         this.area = new Area(Vertex.deserializeVertex(data.origin), Vertex.deserializeVertex(data.offset));
         deserializePermissions(data.permissions);
         deserializeProtections(data.protections);
-
     }
 
     public final void setOwner(PlayerReference reference){
         this.owner = reference.getUUID();
+    }
+
+    public final void setOwner(UUID uuid) {
+        this.owner = uuid;
+    }
+
+    public final Area getArea(){
+        return this.area;
     }
 
     public final void setArea(Area area){
@@ -50,14 +58,18 @@ public final class Claim {
     }
 
     public final boolean hasPermission(PlayerReference reference, Permission permission){
-        return isOwner(reference)|| (permissions.containsKey(reference.getUUID()) && permissions.get(reference.getUUID()).contains(permission));
+        return isOwner(reference) || reference.hasPermission(LandGrab.claimAdminPerm) || (permissions.containsKey(reference.getUUID()) && permissions.get(reference.getUUID()).contains(permission));
+    }
+
+    public final UUID getOwner(){
+        return this.owner;
     }
 
     public final boolean isOwner(PlayerReference reference){
         return reference.getUUID().equals(owner);
     }
 
-    public final boolean save(){
+    public final ClaimDataAccess getDataAccess(){
         ClaimDataAccess data = new ClaimDataAccess();
 
         data.owner = owner.toString();
@@ -66,15 +78,7 @@ public final class Claim {
         data.permissions = serializePermissions();
         data.protections = serializeProtections();
 
-        try {
-            HashMap<String, Object> filter = new HashMap<String, Object>();
-            filter.put("owner", owner.toString());
-            Canary.db().update(data, filter);
-        }
-        catch (DatabaseWriteException dbwex) {
-            return false;
-        }
-        return true;
+        return data;
     }
 
     private List<String> serializePermissions(){
